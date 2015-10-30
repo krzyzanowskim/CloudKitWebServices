@@ -4,7 +4,7 @@ namespace CloudKitWebServices
 {
 	public class CloudKit
 	{
-		public CloudKit ()
+		public CloudKit()
 		{
 		}
 	}
