@@ -8,7 +8,13 @@ namespace CloudKitWebServices
 
 		public readonly string containerIdentifier;
 
-		public CKContainer(string containerIdentifier) {
+		public CKContainer()
+		{
+			throw new NotSupportedException();
+		}
+
+		public CKContainer(string containerIdentifier)
+		{
 			this.containerIdentifier = containerIdentifier;
 		}
 	}

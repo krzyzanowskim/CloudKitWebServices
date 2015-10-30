@@ -16,6 +16,11 @@ namespace CloudKitWebServices
 
 		private Dictionary<string, object> fields;
 
+		public CKRecord()
+		{
+			throw new NotSupportedException();
+		}
+
 		public CKRecord(string recordType) : this(recordType, new CKRecordID(Guid.NewGuid().ToString()))
 		{
 		}
