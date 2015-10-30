@@ -5,8 +5,8 @@ namespace CloudKitWebServices
 	public struct CKRecordZone
 	{
 		public const string CKRecordZoneDefaultName = "_defaultZone";
-		public CKRecordZoneID zoneID;
-
+		public readonly CKRecordZoneID zoneID;
+		// public readonly CKRecordZoneCapabilities capabilities
 		public CKRecordZone()
 		{
 			throw new NotSupportedException();
