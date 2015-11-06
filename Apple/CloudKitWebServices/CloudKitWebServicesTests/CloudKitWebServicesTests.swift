@@ -13,24 +13,20 @@ class CloudKitWebServicesTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testSetup() {
+        let webTokenAuth = CloudKit.Config.WebTokenAuth(webToken: "1234567890")
+        let containerConfig = CloudKit.Config.ContainerConfig(webTokenAuth: webTokenAuth, containerIdentifier: "iCloud.blabla.bla", environment: .Production, apns: nil)
+        let config = CloudKit.Config(containers: [containerConfig])
+        let ck = CloudKit(config: config)
+
+        XCTAssert(ck.config.containers.count == 1)
+        XCTAssert(ck.config.containers.first!.webTokenAuth.webToken == "1234567890")
+        XCTAssert(ck.config.containers.first!.webTokenAuth.persist == false)
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
 }
