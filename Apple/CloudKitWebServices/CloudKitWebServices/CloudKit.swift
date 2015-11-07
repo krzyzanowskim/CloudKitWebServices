@@ -13,7 +13,29 @@ typealias CKWRecord = CKRecord
 
 class CloudKit {
 
-    enum Error: ErrorType {
+    enum ServerErrorCode: String, ErrorType {
+        case ACCESS_DENIED // 0
+        case ATOMIC_ERROR
+        case AUTHENTICATION_FAILED // 2
+        case AUTHENTICATION_REQUIRED
+        case BAD_REQUEST
+        case CONFLICT
+        case EXISTS
+        case INTERNAL_ERROR
+        case NOT_FOUND
+        case QUOTA_EXCEEDED
+        case THROTTLED
+        case TRY_AGAIN_LATER
+        case VALIDATING_REFERENCE_ERROR
+        case UNIQUE_FIELD_ERROR
+        case ZONE_NOT_FOUND
+        case UNKNOWN_ERROR
+        case NETWORK_ERROR
+        case SERVICE_UNAVAILABLE
+        case INVALID_ARGUMENTS
+        case UNEXPECTED_SERVER_RESPONSE
+        case CONFIGURATION_ERROR
+        case BAD_DATABASE
     }
 
     enum Environment: String {
@@ -68,7 +90,6 @@ class CloudKit {
 
     let config: Config
     
-
     // MARK: Functions
 
     init(config: Config) {

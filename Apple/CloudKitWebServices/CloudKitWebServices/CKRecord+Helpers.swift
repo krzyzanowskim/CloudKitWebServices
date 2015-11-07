@@ -23,4 +23,32 @@ extension CKRecord {
         dict["recordName"] = self.recordID.recordName
         return dict
     }
+
+    func fromCKRecordFieldsDictionary(fields: [String: AnyObject]) {
+        for field in fields {
+            let name = field.0
+            if let valueTypeMeta = field.1 as? [String: AnyObject] {
+                self[name] = valueFromCKFieldValueDictionary(valueTypeMeta)
+            }
+        }
+    }
+
+    private func valueFromCKFieldValueDictionary(dictionary: [String: AnyObject]) -> CKRecordValue? {
+        if let type = dictionary["type"] as? String,
+            let value = dictionary["value"]
+        {
+            switch (type) {
+            case "INT64":
+                return value as? NSNumber
+            case "STRING":
+                return value as? String
+            default:
+                break
+            }
+            if let value = value as? String {
+                return value
+            }
+        }
+        return nil
+    }
 }

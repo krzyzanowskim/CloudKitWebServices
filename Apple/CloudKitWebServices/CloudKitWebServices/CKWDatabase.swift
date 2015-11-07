@@ -23,7 +23,7 @@ class CKWDatabase: NSObject {
 
     private let type: AccessType
     private let container: CKWContainer
-    private var sessionToken: String?
+    var sessionToken: String?
 
     private var urlSession: NSURLSession = {
         let sessionConfiguration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
@@ -55,26 +55,45 @@ class CKWDatabase: NSObject {
         self.container = container
     }
 
-    func performQuery(query: CKWQuery, inZoneWithID zoneID: CKRecordZoneID? = nil, completionHandler: ([CKRecord]?, NSError?) -> Void) {
+    func performQuery(query: CKWQuery, inZoneWithID zoneID: CKRecordZoneID = CKRecordZoneID(zoneName: CKRecordZoneDefaultName, ownerName: CKOwnerDefaultName), completionHandler: ([CKRecord], CloudKit.ServerErrorCode?) -> Void) {
         guard let components = NSURLComponents(URL: apiURL, resolvingAgainstBaseURL: false), let path = components.path else {
+            completionHandler([], .UNKNOWN_ERROR)
             return
         }
 
         components.path = "\(path)/records/query"
 
-        let parameters:[String: AnyObject] = ["zoneID": ["zoneName": zoneID == nil ? CKRecordZoneDefaultName : zoneID!.zoneName], "query": query.toCKQueryDictionary()]
+        let parameters:[String: AnyObject] = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKQueryDictionary()]
         let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
         let requestTask = urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
+            var dstRecords = [CKRecord]()
+
             guard let data = data else {
                 assertionFailure("No response data")
+                completionHandler(dstRecords, .UNKNOWN_ERROR)
                 return
             }
 
-            if let jsonObject = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject] {
-                if let recordsObject = jsonObject?["records"] as? [AnyObject] {
-                    print(recordsObject)
+            if let jsonObject = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject] {
+                guard let recordObjects = jsonObject?["records"] as? [AnyObject] else {
+                    if let serverErrorCodeString = jsonObject?["serverErrorCode"] as? String {
+                        completionHandler(dstRecords, CloudKit.ServerErrorCode(rawValue: serverErrorCodeString))
+                    } else {
+                        completionHandler(dstRecords, .UNKNOWN_ERROR)
+                    }
+                    return
+                }
+
+                for recordObject in recordObjects {
+                    let recordName = recordObject["recordName"] as! String
+                    let recordType = recordObject["recordType"] as! String
+
+                    let dstRecord = CKRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
+                    dstRecord.fromCKRecordFieldsDictionary(recordObject["fields"] as? [String: AnyObject] ?? [:])
+                    dstRecords.append(dstRecord)
                 }
             }
+            completionHandler(dstRecords, nil)
         }
         requestTask.resume()
     }
