@@ -9,7 +9,7 @@
 import CloudKit
 
 extension CKRecord {
-    func toCKDictionary() -> [String: AnyObject] {
+    func toCKRecordDictionary() -> [String: AnyObject] {
         var dict = [String: AnyObject]()
 
         var fields = [String: AnyObject]()

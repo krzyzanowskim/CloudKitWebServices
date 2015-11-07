@@ -55,16 +55,39 @@ class CKWDatabase: NSObject {
         self.container = container
     }
 
-    func performQuery(query: CKQuery, inZoneWithID zoneID: CKRecordZoneID?, completionHandler: ([CKRecord]?, NSError?) -> Void) {
-        guard let components = NSURLComponents(URL: apiURL, resolvingAgainstBaseURL: false), let basePath = components.path else {
+    func performQuery(query: CKWQuery, inZoneWithID zoneID: CKRecordZoneID? = nil, completionHandler: ([CKRecord]?, NSError?) -> Void) {
+        guard let components = NSURLComponents(URL: apiURL, resolvingAgainstBaseURL: false), let path = components.path else {
             return
         }
 
-        components.path = "\(basePath)/records/query"
+        components.path = "\(path)/records/query"
 
-//        let queryDictionary:[String: AnyObject] = ["recordType": query.recordType]
-//        let parameters:[String: AnyObject] = ["zoneID": ["zoneName": zoneName], "query": queryDictionary]
-//        let jsonData = try! JSON(parameters).rawData()
+        let parameters:[String: AnyObject] = ["zoneID": ["zoneName": zoneID == nil ? CKRecordZoneDefaultName : zoneID!.zoneName], "query": query.toCKQueryDictionary()]
+        let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
+        let requestTask = urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
+            guard let data = data else {
+                assertionFailure("No response data")
+                return
+            }
 
+            if let jsonObject = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject] {
+                if let recordsObject = jsonObject?["records"] as? [AnyObject] {
+                    print(recordsObject)
+                }
+            }
+        }
+        requestTask.resume()
+    }
+
+    // MAKR: Private
+
+    private func postRequest(url: NSURL?) -> NSURLRequest {
+        guard let url = url else {
+            fatalError("missing URL")
+        }
+
+        let request = NSMutableURLRequest(URL: url, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringCacheData, timeoutInterval: NSTimeInterval(60))
+        request.HTTPMethod = "POST"
+        return request
     }
 }
