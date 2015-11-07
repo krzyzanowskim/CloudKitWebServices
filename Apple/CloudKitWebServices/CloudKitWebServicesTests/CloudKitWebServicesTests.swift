@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import CloudKit
 @testable import CloudKitWebServices
 
 class CloudKitWebServicesTests: XCTestCase {
