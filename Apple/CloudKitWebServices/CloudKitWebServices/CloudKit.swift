@@ -13,6 +13,10 @@ typealias CKWRecord = CKRecord
 
 class CloudKit {
 
+    static let maximumNumberOfOperationsInRequest = 200
+    static let maximumRecordSize = 1024
+    static let maximumAssetFileSize = 1024 * 15
+
     enum ServerErrorCode: String, ErrorType {
         case ACCESS_DENIED // 0
         case ATOMIC_ERROR
