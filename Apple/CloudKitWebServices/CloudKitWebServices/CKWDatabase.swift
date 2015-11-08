@@ -55,7 +55,7 @@ class CKWDatabase: NSObject {
         self.container = container
     }
 
-    func performQuery(query: CKWQuery, inZoneWithID zoneID: CKRecordZoneID = CKRecordZoneID(zoneName: CKRecordZoneDefaultName, ownerName: CKOwnerDefaultName), completionHandler: ([CKRecord], CloudKit.ServerErrorCode?) -> Void) {
+    func performQuery(query: CKWQuery, inZoneWithID zoneID: CKRecordZoneID = CKRecordZoneID(zoneName: CKRecordZoneDefaultName, ownerName: CKOwnerDefaultName), completionHandler: ([CKWRecord], CloudKit.ServerErrorCode?) -> Void) {
         guard let components = NSURLComponents(URL: apiURL, resolvingAgainstBaseURL: false), let path = components.path else {
             completionHandler([], .UNKNOWN_ERROR)
             return
@@ -66,7 +66,7 @@ class CKWDatabase: NSObject {
         let parameters:[String: AnyObject] = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKQueryDictionary()]
         let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
         let requestTask = urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
-            var dstRecords = [CKRecord]()
+            var dstRecords = [CKWRecord]()
 
             guard let data = data else {
                 assertionFailure("No response data")
@@ -88,7 +88,7 @@ class CKWDatabase: NSObject {
                     let recordName = recordObject["recordName"] as! String
                     let recordType = recordObject["recordType"] as! String
 
-                    let dstRecord = CKRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
+                    let dstRecord = CKWRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
                     dstRecord.fromCKRecordFieldsDictionary(recordObject["fields"] as? [String: AnyObject] ?? [:])
                     dstRecords.append(dstRecord)
                 }

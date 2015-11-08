@@ -1,5 +1,5 @@
 //
-//  CKRecord+Helpers.swift
+//  CKWRecord+Helpers.swift
 //  CloudKitWebServices
 //
 //  Created by Marcin Krzyzanowski on 07/11/15.
@@ -8,7 +8,7 @@
 
 import CloudKit
 
-extension CKRecord {
+extension CKWRecord {
     func toCKRecordDictionary() -> [String: AnyObject] {
         var dict = [String: AnyObject]()
 
