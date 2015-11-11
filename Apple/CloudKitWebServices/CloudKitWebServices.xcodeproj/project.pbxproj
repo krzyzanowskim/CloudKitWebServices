@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		752B99391BF3D21F00BCB58A /* ChunkSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752B99381BF3D21F00BCB58A /* ChunkSequence.swift */; };
 		757A46121BED765500212BE2 /* CKWContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757A46111BED765500212BE2 /* CKWContainer.swift */; };
 		757A46141BED77E200212BE2 /* CKWDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757A46131BED77E200212BE2 /* CKWDatabase.swift */; };
-		757A46161BED7E5700212BE2 /* CKRecord+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757A46151BED7E5700212BE2 /* CKRecord+Helpers.swift */; };
+		757A46161BED7E5700212BE2 /* CKWRecord+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757A46151BED7E5700212BE2 /* CKWRecord+Helpers.swift */; };
 		757A46181BED7E8500212BE2 /* CKWAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757A46171BED7E8500212BE2 /* CKWAsset.swift */; };
 		757A461A1BED7FA900212BE2 /* CKReferenceAction+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757A46191BED7FA900212BE2 /* CKReferenceAction+Helpers.swift */; };
 		757A461C1BED8D6C00212BE2 /* CKWQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757A461B1BED8D6C00212BE2 /* CKWQuery.swift */; };
@@ -31,9 +32,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		752B99381BF3D21F00BCB58A /* ChunkSequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChunkSequence.swift; sourceTree = "<group>"; };
 		757A46111BED765500212BE2 /* CKWContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKWContainer.swift; sourceTree = "<group>"; };
 		757A46131BED77E200212BE2 /* CKWDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKWDatabase.swift; sourceTree = "<group>"; };
-		757A46151BED7E5700212BE2 /* CKRecord+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKRecord+Helpers.swift"; sourceTree = "<group>"; };
+		757A46151BED7E5700212BE2 /* CKWRecord+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKWRecord+Helpers.swift"; sourceTree = "<group>"; };
 		757A46171BED7E8500212BE2 /* CKWAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKWAsset.swift; sourceTree = "<group>"; };
 		757A46191BED7FA900212BE2 /* CKReferenceAction+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKReferenceAction+Helpers.swift"; sourceTree = "<group>"; };
 		757A461B1BED8D6C00212BE2 /* CKWQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKWQuery.swift; sourceTree = "<group>"; };
@@ -92,9 +94,10 @@
 				757A46131BED77E200212BE2 /* CKWDatabase.swift */,
 				757A46171BED7E8500212BE2 /* CKWAsset.swift */,
 				757A461B1BED8D6C00212BE2 /* CKWQuery.swift */,
-				757A46151BED7E5700212BE2 /* CKRecord+Helpers.swift */,
+				757A46151BED7E5700212BE2 /* CKWRecord+Helpers.swift */,
 				757A46191BED7FA900212BE2 /* CKReferenceAction+Helpers.swift */,
 				757A461D1BED8F2900212BE2 /* CKRecordValue+Helpers.swift */,
+				752B99381BF3D21F00BCB58A /* ChunkSequence.swift */,
 				75C11FCA1BE2EDDB00D9A454 /* CloudKitWebServices.h */,
 				75C11FCC1BE2EDDB00D9A454 /* Info.plist */,
 			);
@@ -218,8 +221,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				757A46161BED7E5700212BE2 /* CKRecord+Helpers.swift in Sources */,
+				757A46161BED7E5700212BE2 /* CKWRecord+Helpers.swift in Sources */,
 				757A46141BED77E200212BE2 /* CKWDatabase.swift in Sources */,
+				752B99391BF3D21F00BCB58A /* ChunkSequence.swift in Sources */,
 				757A461C1BED8D6C00212BE2 /* CKWQuery.swift in Sources */,
 				757A46181BED7E8500212BE2 /* CKWAsset.swift in Sources */,
 				75C11FE41BE2EE8400D9A454 /* CloudKit.swift in Sources */,

@@ -14,6 +14,7 @@ typealias CKWRecord = CKRecord
 class CloudKit {
 
     static let maximumNumberOfOperationsInRequest = 200
+    static let maximumNumberOfOperationsInResponse = 100
     static let maximumRecordSize = 1024
     static let maximumAssetFileSize = 1024 * 15
 

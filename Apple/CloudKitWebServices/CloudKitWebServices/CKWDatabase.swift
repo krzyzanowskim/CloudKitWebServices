@@ -55,7 +55,7 @@ class CKWDatabase: NSObject {
         self.container = container
     }
 
-    func performQuery(query: CKWQuery, inZoneWithID zoneID: CKRecordZoneID = CKRecordZoneID(zoneName: CKRecordZoneDefaultName, ownerName: CKOwnerDefaultName), completionHandler: ([CKWRecord], CloudKit.ServerErrorCode?) -> Void) {
+    func performQuery(query: CKWQuery, inZoneWithID zoneID: CKRecordZoneID = CKRecordZoneID(zoneName: CKRecordZoneDefaultName, ownerName: CKOwnerDefaultName), continuation: (marker: String, records: [CKWRecord])? = nil, completionHandler: ([CKWRecord], CloudKit.ServerErrorCode?) -> Void) {
         guard let components = NSURLComponents(URL: apiURL, resolvingAgainstBaseURL: false), let path = components.path else {
             completionHandler([], .UNKNOWN_ERROR)
             return
@@ -66,7 +66,7 @@ class CKWDatabase: NSObject {
         let parameters:[String: AnyObject] = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKQueryDictionary()]
         let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
         let requestTask = urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
-            var dstRecords = [CKWRecord]()
+            var dstRecords = continuation?.records ?? [CKWRecord]()
 
             guard let data = data else {
                 assertionFailure("No response data")
@@ -92,8 +92,13 @@ class CKWDatabase: NSObject {
                     dstRecord.fromCKRecordFieldsDictionary(recordObject["fields"] as? [String: AnyObject] ?? [:])
                     dstRecords.append(dstRecord)
                 }
+
+                if let receivedContinuationMarkerString = jsonObject?["continuationMarker"] as? String {
+                    self.performQuery(query, inZoneWithID: zoneID, continuation: (marker: receivedContinuationMarkerString, records: dstRecords), completionHandler: completionHandler)
+                } else {
+                    completionHandler(dstRecords, nil)
+                }
             }
-            completionHandler(dstRecords, nil)
         }
         requestTask.resume()
     }
