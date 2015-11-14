@@ -38,7 +38,7 @@ extension CKWRecord {
             let value = dictionary["value"]
         {
             switch (type) {
-            case "INT64":
+            case "INT64", "DOUBLE":
                 return value as? NSNumber
             case "STRING":
                 return value as? String

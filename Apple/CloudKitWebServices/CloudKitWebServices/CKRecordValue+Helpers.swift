@@ -21,8 +21,12 @@ extension CKRecordValue {
                 list.append(referenceMeta)
             }
             field = ["type": "REFERENCE_LIST", "value": list]
-        } else if let value = self as? NSNumber {
+        } else if let value = self as? NSNumber where value.isReal() {
+            field = ["type": "DOUBLE", "value": value]
+        } else if let value = self as? NSNumber where !value.isReal() {
             field = ["type": "INT64", "value": value]
+        } else if let value = self as? NSData {
+            field = ["type": "BYTES", "value": value.base64EncodedStringWithOptions([])]
         } else if let value = self as? String {
             field = ["type": "STRING", "value": value]
         } else if let value = self as? CKWAsset, valueMeta = value.meta as? CKWAsset.UploadMeta {

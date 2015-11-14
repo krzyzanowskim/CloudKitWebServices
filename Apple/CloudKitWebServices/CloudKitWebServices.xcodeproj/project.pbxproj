@@ -19,6 +19,7 @@
 		75C11FD21BE2EDDB00D9A454 /* CloudKitWebServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75C11FC71BE2EDDB00D9A454 /* CloudKitWebServices.framework */; };
 		75C11FD71BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C11FD61BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift */; };
 		75C11FE41BE2EE8400D9A454 /* CloudKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C11FE31BE2EE8400D9A454 /* CloudKit.swift */; };
+		75D464431BF7AA9E00B73DCC /* NSNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D464421BF7AA9E00B73DCC /* NSNumber+Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		75C11FD61BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitWebServicesTests.swift; sourceTree = "<group>"; };
 		75C11FD81BE2EDDB00D9A454 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75C11FE31BE2EE8400D9A454 /* CloudKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKit.swift; sourceTree = "<group>"; };
+		75D464421BF7AA9E00B73DCC /* NSNumber+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+Helpers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				757A46151BED7E5700212BE2 /* CKWRecord+Helpers.swift */,
 				757A46191BED7FA900212BE2 /* CKReferenceAction+Helpers.swift */,
 				757A461D1BED8F2900212BE2 /* CKRecordValue+Helpers.swift */,
+				75D464421BF7AA9E00B73DCC /* NSNumber+Helpers.swift */,
 				752B99381BF3D21F00BCB58A /* ChunkSequence.swift */,
 				75C11FCA1BE2EDDB00D9A454 /* CloudKitWebServices.h */,
 				75C11FCC1BE2EDDB00D9A454 /* Info.plist */,
@@ -226,6 +229,7 @@
 				752B99391BF3D21F00BCB58A /* ChunkSequence.swift in Sources */,
 				757A461C1BED8D6C00212BE2 /* CKWQuery.swift in Sources */,
 				757A46181BED7E8500212BE2 /* CKWAsset.swift in Sources */,
+				75D464431BF7AA9E00B73DCC /* NSNumber+Helpers.swift in Sources */,
 				75C11FE41BE2EE8400D9A454 /* CloudKit.swift in Sources */,
 				757A46121BED765500212BE2 /* CKWContainer.swift in Sources */,
 				757A461E1BED8F2900212BE2 /* CKRecordValue+Helpers.swift in Sources */,
