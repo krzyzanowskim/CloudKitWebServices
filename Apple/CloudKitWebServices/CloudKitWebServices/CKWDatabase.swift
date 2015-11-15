@@ -69,7 +69,6 @@ class CKWDatabase: NSObject {
             var dstRecords = continuation?.records ?? [CKWRecord]()
 
             guard let data = data else {
-                assertionFailure("No response data")
                 completionHandler(dstRecords, .UNKNOWN_ERROR)
                 return
             }

@@ -52,20 +52,12 @@ struct CKWQuery {
     func toCKQueryDictionary() -> [String: AnyObject] {
         var dict:[String: AnyObject] = ["recordType": recordType]
 
-        if let filterBy = filterBy {
-            var filterDictArray = [[String: AnyObject]]()
-            for filter in filterBy {
-                filterDictArray.append(filter.toCKFilterDictionary())
-            }
-            dict["filterBy"] = filterDictArray
+        dict["filterBy"] = filterBy?.map { filter in
+            return filter.toCKFilterDictionary()
         }
 
-        if let sortBy = sortBy {
-            var sortDictArray = [[String: AnyObject]]()
-            for sort in sortBy {
-                sortDictArray.append(sort.toCKSortDescriptorDictionary())
-            }
-            dict["filterBy"] = sortDictArray
+        dict["filterBy"] = sortBy?.map { sort in
+            return sort.toCKSortDescriptorDictionary()
         }
 
         return dict
