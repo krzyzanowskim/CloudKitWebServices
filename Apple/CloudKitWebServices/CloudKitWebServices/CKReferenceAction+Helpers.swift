@@ -10,7 +10,7 @@ import CloudKit
 
 extension CKReferenceAction {
 
-    init(reference: CloudKit.CKWReferenceAction) {
+    init(reference: CKWReferenceAction) {
         switch (reference) {
             case .None, .Validate:
                 self = .None
@@ -19,12 +19,12 @@ extension CKReferenceAction {
         }
     }
 
-    func toCKWReferenceAction() -> CloudKit.CKWReferenceAction {
+    func toCKWReferenceAction() -> CKWReferenceAction {
         switch (self) {
         case .None:
-            return CloudKit.CKWReferenceAction.None
+            return .None
         case .DeleteSelf:
-            return CloudKit.CKWReferenceAction.DeleteSelf
+            return .DeleteSelf
         }
     }
 }

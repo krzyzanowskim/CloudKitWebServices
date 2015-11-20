@@ -33,9 +33,8 @@ extension CKRecordValue {
             field = ["type": "TIMESTAMP", "value": value.timeIntervalSince1970 * 1000]
         } else if let value = self as? String {
             field = ["type": "STRING", "value": value]
-        } else if let value = self as? CKWAsset, valueMeta = value.meta as? CKWAsset.UploadMeta {
-            let assetMeta = ["receipt": valueMeta.receipt, "size": valueMeta.size, "fileChecksum": valueMeta.fileChecksum]
-            field = ["type": "ASSETID", "value": assetMeta]
+        } else if let value = self as? CKWAsset, valueInfo = value.info as? CKWAsset.Info {
+            field = ["type": "ASSETID", "value": valueInfo.toCKDictionary()]
         }
         return field
     }

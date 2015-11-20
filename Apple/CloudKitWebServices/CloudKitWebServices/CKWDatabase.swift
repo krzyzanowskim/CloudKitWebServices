@@ -63,7 +63,7 @@ class CKWDatabase: NSObject {
 
         components.path = "\(path)/records/query"
 
-        let parameters:[String: AnyObject] = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKQueryDictionary()]
+        let parameters = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKQueryDictionary()]
         let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
         let requestTask = urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
             var dstRecords = continuation?.records ?? [CKWRecord]()
@@ -88,14 +88,134 @@ class CKWDatabase: NSObject {
                     let recordType = recordObject["recordType"] as! String
 
                     let dstRecord = CKWRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
-                    dstRecord.fromCKRecordFieldsDictionary(recordObject["fields"] as? [String: AnyObject] ?? [:])
+                    dstRecord.loadCKRecordFieldsDictionary(recordObject["fields"] as? [String: AnyObject] ?? [:])
                     dstRecords.append(dstRecord)
                 }
 
                 if let receivedContinuationMarkerString = jsonObject?["continuationMarker"] as? String {
                     self.performQuery(query, inZoneWithID: zoneID, continuation: (marker: receivedContinuationMarkerString, records: dstRecords), completionHandler: completionHandler)
                 } else {
-                    completionHandler(dstRecords, nil)
+                    dispatch_async(dispatch_get_main_queue()) {
+                        completionHandler(dstRecords, nil)
+                    }
+                }
+            }
+        }
+        requestTask.resume()
+    }
+
+    func modify(operationType: ModifyOperationType = .forceUpdate, inZoneWithID zoneID: CKRecordZoneID = CKRecordZoneID(zoneName: CKRecordZoneDefaultName, ownerName: CKOwnerDefaultName), records recordsToSave: [CKWRecord], completionHandler: (error: CloudKit.ServerErrorCode?) -> Void) {
+        guard let components = NSURLComponents(URL: apiURL, resolvingAgainstBaseURL: false), let path = components.path else {
+            completionHandler(error: .UNKNOWN_ERROR)
+            return
+        }
+
+        precondition(recordsToSave.count <= CloudKit.maximumNumberOfOperationsInRequest, "Array<CKWRecord> length is greater than max size")
+
+        components.path = "\(path)/records/modify"
+
+        // 1. upload assets
+        let assetUploadGroup = dispatch_group_create()
+
+        if [.create, .update, .forceUpdate, .replace, .forceUpdate].contains(operationType) {
+            for record in recordsToSave {
+                for key in record.allKeys() where record[key] is CKAsset || record[key] is CKWAsset {
+                    let ckwAsset = CKWAsset(record[key] as! CKAsset)
+                    dispatch_group_enter(assetUploadGroup)
+                    //TODO: upload
+                    assetUpload(inZoneWithID: zoneID, asset: ckwAsset, recordType: record.recordType, fieldName: key, completionHandler: { (asset, error) -> Void in
+                        record[key] = asset
+                        dispatch_group_leave(assetUploadGroup)
+                    })
+                }
+            }
+        }
+
+        //2. create/update records
+        dispatch_group_notify(assetUploadGroup, dispatch_get_main_queue()) {
+            let operations = recordsToSave.map { ckRecord -> [String: AnyObject] in
+                var operation: [String: AnyObject] = ["operationType": operationType.rawValue]
+                operation["record"] = [.delete, .forceDelete].contains(operationType) ? ["recordName": ckRecord.recordID.recordName] : ckRecord.toCKRecordDictionary()
+                return operation
+            }
+
+            let parameters = ["zoneID": ["zoneName": zoneID.zoneName], "operations": operations, "atomic": "false"]
+            let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
+            let requestTask = self.urlSession.uploadTaskWithRequest(self.postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
+//                do {
+//                    try self.checkError(data)
+//                } catch {
+//                    completion(error: error)
+//                    print(operations)
+//                    return
+//                }
+                completionHandler(error: nil)
+            }
+            requestTask.resume()
+        }
+    }
+
+    func assetUpload(inZoneWithID zoneID: CKRecordZoneID = CKRecordZoneID(zoneName: CKRecordZoneDefaultName, ownerName: CKOwnerDefaultName), asset: CKWAsset, recordType: String, fieldName: String, completionHandler: (asset: CKWAsset?, error: ErrorType?) -> Void) {
+        guard let components = NSURLComponents(URL: apiURL, resolvingAgainstBaseURL: false), let path = components.path else {
+            completionHandler(asset: nil, error: CloudKit.ServerErrorCode.UNKNOWN_ERROR as ErrorType)
+            return
+        }
+
+        components.path = "\(path)/assets/upload"
+
+        let tokens = [["recordType": recordType, "fieldName": fieldName]] as [[String:AnyObject]]
+        let parameters = ["zoneID": ["zoneName": zoneID.zoneName], "tokens": tokens]
+
+        let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
+        let requestTask = self.urlSession.uploadTaskWithRequest(self.postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
+            guard let data = data, let jsonObject = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject] else {
+                completionHandler(asset: nil, error: CloudKit.ServerErrorCode.UNKNOWN_ERROR as ErrorType)
+                return
+            }
+            
+            if let tokens = jsonObject?["tokens"] as? [Dictionary<String, String>] {
+                for tokenDictionary in tokens {
+                    if let urlString = tokenDictionary["url"],
+                       let uploadURL = NSURL(string: urlString)
+                    {
+                        let uploadTask = self.urlSession.uploadTaskWithRequest(self.postRequest(uploadURL), fromFile: asset.fileURL, completionHandler: { (data, response, error) in
+                            guard let data = data, let jsonResponseObject = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject] else {
+                                completionHandler(asset: nil, error: error)
+                                return
+                            }
+
+                            if let singleFileDictionary = jsonResponseObject?["singleFile"] as? [String: AnyObject] {
+                                /*
+                                {
+                                    "singleFile" :{
+                                        "wrappingKey" : [WRAPPING_KEY],
+                                        "fileChecksum" : [SIGNATURE],
+                                        "receipt" : [RECEIPT],
+                                        "referenceChecksum" : [REFERENCE_CHECKSUM],
+                                        "size" : [SIZE]
+                                    }
+                                }
+                                */
+                                if let receipt = singleFileDictionary["receipt"] as? String,
+                                   let size = singleFileDictionary["size"] as? NSNumber,
+                                   let fileChecksum = singleFileDictionary["fileChecksum"] as? String
+                                {
+                                    let wrappingKey = singleFileDictionary["wrappingKey"] as? String ?? ""
+                                    let referenceChecksum = singleFileDictionary["referenceChecksum"] as? String ?? ""
+
+                                    asset.info = CKWAsset.Info(fileChecksum: fileChecksum,
+                                                                     size: size,
+                                                                     receipt: receipt,
+                                                                     wrappingKey: wrappingKey,
+                                                                     referenceChecksum: referenceChecksum,
+                                                                     downloadURL: nil)
+
+                                    completionHandler(asset: asset, error: nil)
+                                }
+                            }
+                        })
+                        uploadTask.resume()
+                    }
                 }
             }
         }

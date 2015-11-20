@@ -20,6 +20,8 @@
 		75C11FD71BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C11FD61BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift */; };
 		75C11FE41BE2EE8400D9A454 /* CloudKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C11FE31BE2EE8400D9A454 /* CloudKit.swift */; };
 		75D464431BF7AA9E00B73DCC /* NSNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D464421BF7AA9E00B73DCC /* NSNumber+Helpers.swift */; };
+		75D464451BF80C7200B73DCC /* ModifyOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D464441BF80C7200B73DCC /* ModifyOperationType.swift */; };
+		75D464471BF80C9200B73DCC /* CKWReferenceAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D464461BF80C9200B73DCC /* CKWReferenceAction.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		75C11FD81BE2EDDB00D9A454 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75C11FE31BE2EE8400D9A454 /* CloudKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKit.swift; sourceTree = "<group>"; };
 		75D464421BF7AA9E00B73DCC /* NSNumber+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+Helpers.swift"; sourceTree = "<group>"; };
+		75D464441BF80C7200B73DCC /* ModifyOperationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyOperationType.swift; sourceTree = "<group>"; };
+		75D464461BF80C9200B73DCC /* CKWReferenceAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKWReferenceAction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +100,8 @@
 				757A46131BED77E200212BE2 /* CKWDatabase.swift */,
 				757A46171BED7E8500212BE2 /* CKWAsset.swift */,
 				757A461B1BED8D6C00212BE2 /* CKWQuery.swift */,
+				75D464461BF80C9200B73DCC /* CKWReferenceAction.swift */,
+				75D464441BF80C7200B73DCC /* ModifyOperationType.swift */,
 				757A46191BED7FA900212BE2 /* CKReferenceAction+Helpers.swift */,
 				757A46151BED7E5700212BE2 /* CKWRecord+Helpers.swift */,
 				757A461D1BED8F2900212BE2 /* CKRecordValue+Helpers.swift */,
@@ -232,6 +238,8 @@
 				75D464431BF7AA9E00B73DCC /* NSNumber+Helpers.swift in Sources */,
 				75C11FE41BE2EE8400D9A454 /* CloudKit.swift in Sources */,
 				757A46121BED765500212BE2 /* CKWContainer.swift in Sources */,
+				75D464451BF80C7200B73DCC /* ModifyOperationType.swift in Sources */,
+				75D464471BF80C9200B73DCC /* CKWReferenceAction.swift in Sources */,
 				757A461E1BED8F2900212BE2 /* CKRecordValue+Helpers.swift in Sources */,
 				757A461A1BED7FA900212BE2 /* CKReferenceAction+Helpers.swift in Sources */,
 			);

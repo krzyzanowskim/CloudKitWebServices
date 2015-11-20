@@ -48,21 +48,6 @@ class CloudKit {
         case Development = "development"
     }
 
-    enum CKWReferenceAction: String {
-        case Validate = "VALIDATE"
-        case None = "NONE"
-        case DeleteSelf = "DELETE_SELF"
-
-        func toCKReferenceAction() -> CKReferenceAction {
-            switch (self) {
-            case .Validate, .None:
-                return CKReferenceAction.None
-            case .DeleteSelf:
-                return CKReferenceAction.DeleteSelf
-            }
-        }
-    }
-
     struct Config {
 
         struct APNSConfig {

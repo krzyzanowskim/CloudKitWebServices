@@ -26,7 +26,7 @@ extension CKWRecord {
         return dict
     }
 
-    func fromCKRecordFieldsDictionary(fields: [String: AnyObject]) {
+    func loadCKRecordFieldsDictionary(fields: [String: AnyObject]) {
         for field in fields {
             let name = field.0
             if let valueTypeMeta = field.1 as? [String: AnyObject] {
@@ -60,7 +60,7 @@ extension CKWRecord {
                     if let zoneIDDict = valueDict["zoneID"] as? [String: String] {
                         zoneName = zoneIDDict["zoneName"]!
                     }
-                    return CKReference(recordID: CKRecordID(recordName: recordName, zoneID: CKRecordZoneID(zoneName: zoneName, ownerName: CKOwnerDefaultName)), action: CloudKit.CKWReferenceAction(rawValue: action)!.toCKReferenceAction())
+                    return CKReference(recordID: CKRecordID(recordName: recordName, zoneID: CKRecordZoneID(zoneName: zoneName, ownerName: CKOwnerDefaultName)), action: CKWReferenceAction(rawValue: action)!.toCKReferenceAction())
 
                 }
             case "STRING":
