@@ -18,7 +18,7 @@ extension CKRecordValue {
         if let value = self as? CKReference {
             let referenceMeta = ["recordName": value.recordID.recordName, "zone": value.recordID.zoneID.zoneName, "action": value.referenceAction.toCKWReferenceAction().rawValue]
             field = ["type": "REFERENCE", "value": referenceMeta]
-        } else if let valueList = self as? [CKReference] {
+        } else if let valueList = self as? [CKReference] where !valueList.isEmpty {
             let list = valueList.map { value in
                 return ["recordName": value.recordID.recordName, "zone": value.recordID.zoneID.zoneName, "action": value.referenceAction.toCKWReferenceAction().rawValue]
             }
@@ -35,6 +35,11 @@ extension CKRecordValue {
             field = ["type": "STRING", "value": value]
         } else if let value = self as? CKWAsset, valueInfo = value.info as? CKWAsset.Info {
             field = ["type": "ASSETID", "value": valueInfo.toCKDictionary()]
+        } else if let valueList = self as? [CKWAsset] where !valueList.isEmpty {
+            let fields = valueList.flatMap { value -> [String:AnyObject]? in
+                return value.toCKFieldDictionary()
+            }
+            field = ["type": "ASSETID_LIST", "value": fields]
         }
         return field
     }

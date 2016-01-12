@@ -76,6 +76,14 @@ class CloudKit {
         let containers: [ContainerConfig]
     }
 
+    /// System keys because CKRecord["modificationDate"] is protected and cannot be modified
+    /// Please use this placeholder to work with system fields
+    enum SystemKeys: String {
+        case modificationDate = "___modTime"
+        case creationDate = "___createTime"
+    }
+
+
     // MARK: Properties
 
     let config: Config

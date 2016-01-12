@@ -26,7 +26,23 @@ extension CKWRecord {
         return dict
     }
 
-    func loadCKRecordFieldsDictionary(fields: [String: AnyObject]) {
+    func loadCKRecordValuesFromWebRecord(recordObject: [String: AnyObject]) {
+        self.loadCKRecordSystemFieldsDictionary(recordObject)
+        self.loadCKRecordFieldsDictionary(recordObject["fields"] as? [String: AnyObject] ?? [:])
+    }
+
+    //TODO: check this in the wild
+    private func loadCKRecordSystemFieldsDictionary(recordObject: [String: AnyObject]) {
+        if let modificationDateValue = recordObject[CloudKit.SystemKeys.modificationDate.rawValue] as? Double {
+            self[CloudKit.SystemKeys.modificationDate.rawValue] = NSDate(timeIntervalSince1970: modificationDateValue / 1000)
+        }
+
+        if let creationDateValue = recordObject[CloudKit.SystemKeys.creationDate.rawValue] as? Double {
+            self[CloudKit.SystemKeys.creationDate.rawValue] = NSDate(timeIntervalSince1970: creationDateValue / 1000)
+        }
+    }
+
+    private func loadCKRecordFieldsDictionary(fields: [String: AnyObject]) {
         for field in fields {
             let name = field.0
             if let valueTypeMeta = field.1 as? [String: AnyObject] {

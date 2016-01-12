@@ -34,9 +34,13 @@ extension CKAssetInfoPrivate {
     }
 }
 
+protocol CKAssetDownloadInfo {
+    var downloadURL: NSURL? { get }
+}
+
 class CKWAsset: CKAsset {
 
-    struct Info: CKAssetInfoCommon, CKAssetInfoPrivate {
+    struct Info: CKAssetInfoCommon, CKAssetInfoPrivate, CKAssetDownloadInfo {
         let fileChecksum: String
         let size: NSNumber
         let receipt: String

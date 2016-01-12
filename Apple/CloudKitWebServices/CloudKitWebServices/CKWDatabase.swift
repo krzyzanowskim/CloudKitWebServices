@@ -66,7 +66,7 @@ class CKWDatabase: NSObject {
         let parameters = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKQueryDictionary()]
         let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
         let requestTask = urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
-            var dstRecords = continuation?.records ?? [CKWRecord]()
+            var dstRecords = continuation?.records ?? []
 
             guard let data = data else {
                 completionHandler(dstRecords, .UNKNOWN_ERROR)
@@ -88,7 +88,7 @@ class CKWDatabase: NSObject {
                     let recordType = recordObject["recordType"] as! String
 
                     let dstRecord = CKWRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
-                    dstRecord.loadCKRecordFieldsDictionary(recordObject["fields"] as? [String: AnyObject] ?? [:])
+                    dstRecord.loadCKRecordValuesFromWebRecord(recordObject as? [String: AnyObject] ?? [:])
                     dstRecords.append(dstRecord)
                 }
 

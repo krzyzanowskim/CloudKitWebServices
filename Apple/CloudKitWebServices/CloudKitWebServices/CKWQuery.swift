@@ -38,12 +38,12 @@ struct CKWQuery {
     // MARK: Properties
 
     let recordType: String
-    var filterBy: [Filter]?
-    var sortBy: [Sort]?
+    var filterBy: [Filter]
+    var sortBy: [Sort]
 
     // MARK: Functions
 
-    init(recordType: String, filterBy: [Filter]? = nil, sortBy: [Sort]? = nil) {
+    init(recordType: String, filterBy: [Filter] = [], sortBy: [Sort] = []) {
         self.recordType = recordType
         self.filterBy = filterBy
         self.sortBy = sortBy
@@ -52,12 +52,16 @@ struct CKWQuery {
     func toCKQueryDictionary() -> [String: AnyObject] {
         var dict:[String: AnyObject] = ["recordType": recordType]
 
-        dict["filterBy"] = filterBy?.map { filter in
-            return filter.toCKFilterDictionary()
+        if filterBy.count > 0 {
+            dict["filterBy"] = filterBy.map { filter in
+                return filter.toCKFilterDictionary()
+            }
         }
 
-        dict["filterBy"] = sortBy?.map { sort in
-            return sort.toCKSortDescriptorDictionary()
+        if sortBy.count > 0 {
+            dict["sortBy"] = sortBy.map { sort in
+                return sort.toCKSortDescriptorDictionary()
+            }
         }
 
         return dict
