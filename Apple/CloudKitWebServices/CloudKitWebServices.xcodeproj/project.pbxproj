@@ -19,6 +19,10 @@
 		75C11FD21BE2EDDB00D9A454 /* CloudKitWebServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75C11FC71BE2EDDB00D9A454 /* CloudKitWebServices.framework */; };
 		75C11FD71BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C11FD61BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift */; };
 		75C11FE41BE2EE8400D9A454 /* CloudKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C11FE31BE2EE8400D9A454 /* CloudKit.swift */; };
+		75CD0FF01C45AF810058A241 /* FailableURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CD0FEE1C45AF810058A241 /* FailableURLSession.swift */; };
+		75CD0FF11C45AF810058A241 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CD0FEF1C45AF810058A241 /* MockURLSession.swift */; };
+		75CD0FF31C4658E20058A241 /* CKDictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CD0FF21C4658E20058A241 /* CKDictionaryRepresentable.swift */; };
+		75CD0FF51C465C730058A241 /* CKWReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CD0FF41C465C730058A241 /* CKWReference.swift */; };
 		75D464431BF7AA9E00B73DCC /* NSNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D464421BF7AA9E00B73DCC /* NSNumber+Helpers.swift */; };
 		75D464451BF80C7200B73DCC /* ModifyOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D464441BF80C7200B73DCC /* ModifyOperationType.swift */; };
 		75D464471BF80C9200B73DCC /* CKWReferenceAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D464461BF80C9200B73DCC /* CKWReferenceAction.swift */; };
@@ -50,6 +54,10 @@
 		75C11FD61BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitWebServicesTests.swift; sourceTree = "<group>"; };
 		75C11FD81BE2EDDB00D9A454 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75C11FE31BE2EE8400D9A454 /* CloudKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKit.swift; sourceTree = "<group>"; };
+		75CD0FEE1C45AF810058A241 /* FailableURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailableURLSession.swift; sourceTree = "<group>"; };
+		75CD0FEF1C45AF810058A241 /* MockURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		75CD0FF21C4658E20058A241 /* CKDictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKDictionaryRepresentable.swift; sourceTree = "<group>"; };
+		75CD0FF41C465C730058A241 /* CKWReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKWReference.swift; sourceTree = "<group>"; };
 		75D464421BF7AA9E00B73DCC /* NSNumber+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+Helpers.swift"; sourceTree = "<group>"; };
 		75D464441BF80C7200B73DCC /* ModifyOperationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyOperationType.swift; sourceTree = "<group>"; };
 		75D464461BF80C9200B73DCC /* CKWReferenceAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKWReferenceAction.swift; sourceTree = "<group>"; };
@@ -101,6 +109,7 @@
 				757A46171BED7E8500212BE2 /* CKWAsset.swift */,
 				757A461B1BED8D6C00212BE2 /* CKWQuery.swift */,
 				75D464461BF80C9200B73DCC /* CKWReferenceAction.swift */,
+				75CD0FF41C465C730058A241 /* CKWReference.swift */,
 				75D464441BF80C7200B73DCC /* ModifyOperationType.swift */,
 				757A46191BED7FA900212BE2 /* CKReferenceAction+Helpers.swift */,
 				757A46151BED7E5700212BE2 /* CKWRecord+Helpers.swift */,
@@ -109,6 +118,7 @@
 				752B99381BF3D21F00BCB58A /* ChunkSequence.swift */,
 				75C11FCA1BE2EDDB00D9A454 /* CloudKitWebServices.h */,
 				75C11FCC1BE2EDDB00D9A454 /* Info.plist */,
+				75CD0FF21C4658E20058A241 /* CKDictionaryRepresentable.swift */,
 			);
 			path = CloudKitWebServices;
 			sourceTree = "<group>";
@@ -116,10 +126,20 @@
 		75C11FD51BE2EDDB00D9A454 /* CloudKitWebServicesTests */ = {
 			isa = PBXGroup;
 			children = (
+				75CD0FED1C45AF800058A241 /* Mocking */,
 				75C11FD61BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift */,
 				75C11FD81BE2EDDB00D9A454 /* Info.plist */,
 			);
 			path = CloudKitWebServicesTests;
+			sourceTree = "<group>";
+		};
+		75CD0FED1C45AF800058A241 /* Mocking */ = {
+			isa = PBXGroup;
+			children = (
+				75CD0FEE1C45AF810058A241 /* FailableURLSession.swift */,
+				75CD0FEF1C45AF810058A241 /* MockURLSession.swift */,
+			);
+			path = Mocking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -235,11 +255,13 @@
 				752B99391BF3D21F00BCB58A /* ChunkSequence.swift in Sources */,
 				757A461C1BED8D6C00212BE2 /* CKWQuery.swift in Sources */,
 				757A46181BED7E8500212BE2 /* CKWAsset.swift in Sources */,
+				75CD0FF51C465C730058A241 /* CKWReference.swift in Sources */,
 				75D464431BF7AA9E00B73DCC /* NSNumber+Helpers.swift in Sources */,
 				75C11FE41BE2EE8400D9A454 /* CloudKit.swift in Sources */,
 				757A46121BED765500212BE2 /* CKWContainer.swift in Sources */,
 				75D464451BF80C7200B73DCC /* ModifyOperationType.swift in Sources */,
 				75D464471BF80C9200B73DCC /* CKWReferenceAction.swift in Sources */,
+				75CD0FF31C4658E20058A241 /* CKDictionaryRepresentable.swift in Sources */,
 				757A461E1BED8F2900212BE2 /* CKRecordValue+Helpers.swift in Sources */,
 				757A461A1BED7FA900212BE2 /* CKReferenceAction+Helpers.swift in Sources */,
 			);
@@ -249,6 +271,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75CD0FF11C45AF810058A241 /* MockURLSession.swift in Sources */,
+				75CD0FF01C45AF810058A241 /* FailableURLSession.swift in Sources */,
 				75C11FD71BE2EDDB00D9A454 /* CloudKitWebServicesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

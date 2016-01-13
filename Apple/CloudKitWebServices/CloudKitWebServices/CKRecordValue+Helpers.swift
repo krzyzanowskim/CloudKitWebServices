@@ -12,17 +12,13 @@
 
 import CloudKit
 
-extension CKRecordValue {
-    func toCKFieldDictionary() -> [String: AnyObject] {
+extension CKRecordValue /*: CKDictionaryRepresentable */ {
+    func toCKDictionary() -> [String: AnyObject] {
         var field = [String: AnyObject]()
         if let value = self as? CKReference {
-            let referenceMeta = ["recordName": value.recordID.recordName, "zone": value.recordID.zoneID.zoneName, "action": value.referenceAction.toCKWReferenceAction().rawValue]
-            field = ["type": "REFERENCE", "value": referenceMeta]
+            field = ["type": "REFERENCE", "value": ["recordName": value.recordID.recordName, "zone": value.recordID.zoneID.zoneName, "action": value.referenceAction.toCKWReferenceAction().rawValue]]
         } else if let valueList = self as? [CKReference] where !valueList.isEmpty {
-            let list = valueList.map { value in
-                return ["recordName": value.recordID.recordName, "zone": value.recordID.zoneID.zoneName, "action": value.referenceAction.toCKWReferenceAction().rawValue]
-            }
-            field = ["type": "REFERENCE_LIST", "value": list]
+            field = ["type": "REFERENCE_LIST", "value": valueList.map { $0.toCKDictionary() }]
         } else if let value = self as? NSNumber where value.isReal() {
             field = ["type": "DOUBLE", "value": value]
         } else if let value = self as? NSNumber where !value.isReal() {
@@ -36,10 +32,7 @@ extension CKRecordValue {
         } else if let value = self as? CKWAsset, valueInfo = value.info as? CKWAsset.Info {
             field = ["type": "ASSETID", "value": valueInfo.toCKDictionary()]
         } else if let valueList = self as? [CKWAsset] where !valueList.isEmpty {
-            let fields = valueList.flatMap { value -> [String:AnyObject]? in
-                return value.toCKFieldDictionary()
-            }
-            field = ["type": "ASSETID_LIST", "value": fields]
+            field = ["type": "ASSETID_LIST", "value": valueList.map({ $0.toCKDictionary() })]
         }
         return field
     }

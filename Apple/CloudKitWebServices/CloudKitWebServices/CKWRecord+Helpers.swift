@@ -10,15 +10,15 @@
 
 import CloudKit
 
-extension CKWRecord {
-    func toCKRecordDictionary() -> [String: AnyObject] {
+extension CKWRecord: CKDictionaryRepresentable {
+    func toCKDictionary() -> [String: AnyObject] {
         var dict = [String: AnyObject]()
 
         var fields = [String: AnyObject]()
         for key in self.allKeys() {
             let value = self.valueForKey(key) as? CKRecordValue
             assert(value != nil, "no value")
-            fields[key] = value?.toCKFieldDictionary()
+            fields[key] = value?.toCKDictionary()
         }
         dict["fields"] = fields
         dict["recordType"] = self.recordType

@@ -8,19 +8,42 @@
 
 import CloudKit
 
-struct CKWQuery {
+struct CKWQuery: CKDictionaryRepresentable {
 
-    struct Filter {
-        let comparator: String
+    enum Comparator: String {
+        case EQUALS
+        case NOT_EQUALS
+        case LESS_THAN
+        case LESS_THAN_OR_EQUALS
+        case GREATER_THAN
+        case GREATER_THAN_OR_EQUALS
+        case NEAR
+        case CONTAINS_ALL_TOKENS
+        case IN
+        case NOT_IN
+        case CONTAINS_ANY_TOKENS
+        case LIST_CONTAINS
+        case NOT_LIST_CONTAINS
+        case NOT_LIST_CONTAINS_ANY
+        case BEGINS_WITH
+        case NOT_BEGINS_WITH
+        case LIST_MEMBER_BEGINS_WITH
+        case NOT_LIST_MEMBER_BEGINS_WITH
+        case LIST_CONTAINS_ALL
+        case NOT_LIST_CONTAINS_ALL
+    }
+
+    struct Filter: CKDictionaryRepresentable {
+        let comparator: Comparator
         let fieldName: String
         let fieldValue: CKRecordValue
 
-        func toCKFilterDictionary() -> [String: AnyObject] {
-            return ["comparator": comparator, "fieldName": fieldName, "fieldValue": fieldValue.toCKFieldDictionary()]
+        func toCKDictionary() -> [String : AnyObject] {
+            return ["comparator": comparator.rawValue, "fieldName": fieldName, "fieldValue": fieldValue.toCKDictionary()]
         }
     }
 
-    struct Sort {
+    struct Sort: CKDictionaryRepresentable {
         let fieldName: String
         let ascending: Bool
         // let relativeLocation
@@ -30,7 +53,7 @@ struct CKWQuery {
             self.ascending = ascending
         }
 
-        func toCKSortDescriptorDictionary() -> [String: AnyObject] {
+        func toCKDictionary() -> [String: AnyObject] {
             return ["fieldName": fieldName, "ascending": ascending]
         }
     }
@@ -49,18 +72,18 @@ struct CKWQuery {
         self.sortBy = sortBy
     }
 
-    func toCKQueryDictionary() -> [String: AnyObject] {
+    func toCKDictionary() -> [String: AnyObject] {
         var dict:[String: AnyObject] = ["recordType": recordType]
 
         if filterBy.count > 0 {
             dict["filterBy"] = filterBy.map { filter in
-                return filter.toCKFilterDictionary()
+                return filter.toCKDictionary()
             }
         }
 
         if sortBy.count > 0 {
             dict["sortBy"] = sortBy.map { sort in
-                return sort.toCKSortDescriptorDictionary()
+                return sort.toCKDictionary()
             }
         }
 

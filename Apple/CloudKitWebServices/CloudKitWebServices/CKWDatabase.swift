@@ -5,6 +5,9 @@
 //  Created by Marcin Krzyzanowski on 07/11/15.
 //  Copyright © 2015 Marcin Krzyżanowski. All rights reserved.
 //
+//  TODO:
+//  .UNKNOWN_ERROR for general NSError is not the most optimal way to deal with error. It is unknown because don't have CloudKit description, but it may be simply network error and atm it's not possible to figure out what it is.
+//
 
 import CloudKit
 
@@ -25,7 +28,7 @@ class CKWDatabase: NSObject {
     private let container: CKWContainer
     var sessionToken: String?
 
-    private var urlSession: NSURLSession = {
+    var urlSession: NSURLSession = {
         let sessionConfiguration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
         sessionConfiguration.HTTPAdditionalHeaders = ["Content-Type": "application/json; charset=UTF-8"]
         return NSURLSession(configuration: sessionConfiguration)
@@ -63,41 +66,41 @@ class CKWDatabase: NSObject {
 
         components.path = "\(path)/records/query"
 
-        let parameters = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKQueryDictionary()]
+        let parameters = ["zoneID": ["zoneName": zoneID.zoneName], "query": query.toCKDictionary()]
         let jsonData = try! NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions.PrettyPrinted)
-        let requestTask = urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
+        let requestTask = self.urlSession.uploadTaskWithRequest(postRequest(components.URL), fromData: jsonData) { (data, response, error) -> Void in
             var dstRecords = continuation?.records ?? []
 
-            guard let data = data else {
+            guard let data = data,
+                  let jsonObject = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject]
+            else {
                 completionHandler(dstRecords, .UNKNOWN_ERROR)
                 return
             }
 
-            if let jsonObject = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject] {
-                guard let recordObjects = jsonObject?["records"] as? [AnyObject] else {
-                    if let serverErrorCodeString = jsonObject?["serverErrorCode"] as? String {
-                        completionHandler(dstRecords, CloudKit.ServerErrorCode(rawValue: serverErrorCodeString))
-                    } else {
-                        completionHandler(dstRecords, .UNKNOWN_ERROR)
-                    }
-                    return
-                }
-
-                for recordObject in recordObjects {
-                    let recordName = recordObject["recordName"] as! String
-                    let recordType = recordObject["recordType"] as! String
-
-                    let dstRecord = CKWRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
-                    dstRecord.loadCKRecordValuesFromWebRecord(recordObject as? [String: AnyObject] ?? [:])
-                    dstRecords.append(dstRecord)
-                }
-
-                if let receivedContinuationMarkerString = jsonObject?["continuationMarker"] as? String {
-                    self.performQuery(query, inZoneWithID: zoneID, continuation: (marker: receivedContinuationMarkerString, records: dstRecords), completionHandler: completionHandler)
+            guard let recordObjects = jsonObject?["records"] as? [AnyObject] else {
+                if let serverErrorCodeString = jsonObject?["serverErrorCode"] as? String {
+                    completionHandler(dstRecords, CloudKit.ServerErrorCode(rawValue: serverErrorCodeString))
                 } else {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        completionHandler(dstRecords, nil)
-                    }
+                    completionHandler(dstRecords, .UNKNOWN_ERROR)
+                }
+                return
+            }
+
+            for recordObject in recordObjects {
+                let recordName = recordObject["recordName"] as! String
+                let recordType = recordObject["recordType"] as! String
+
+                let dstRecord = CKWRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
+                dstRecord.loadCKRecordValuesFromWebRecord(recordObject as? [String: AnyObject] ?? [:])
+                dstRecords.append(dstRecord)
+            }
+
+            if let receivedContinuationMarkerString = jsonObject?["continuationMarker"] as? String {
+                self.performQuery(query, inZoneWithID: zoneID, continuation: (marker: receivedContinuationMarkerString, records: dstRecords), completionHandler: completionHandler)
+            } else {
+                dispatch_async(dispatch_get_main_queue()) {
+                    completionHandler(dstRecords, nil)
                 }
             }
         }
@@ -135,7 +138,7 @@ class CKWDatabase: NSObject {
         dispatch_group_notify(assetUploadGroup, dispatch_get_main_queue()) {
             let operations = recordsToSave.map { ckRecord -> [String: AnyObject] in
                 var operation: [String: AnyObject] = ["operationType": operationType.rawValue]
-                operation["record"] = [.delete, .forceDelete].contains(operationType) ? ["recordName": ckRecord.recordID.recordName] : ckRecord.toCKRecordDictionary()
+                operation["record"] = [.delete, .forceDelete].contains(operationType) ? ["recordName": ckRecord.recordID.recordName] : ckRecord.toCKDictionary()
                 return operation
             }
 

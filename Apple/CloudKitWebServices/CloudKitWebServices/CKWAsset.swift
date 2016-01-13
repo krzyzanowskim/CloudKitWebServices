@@ -14,7 +14,7 @@ protocol CKAssetInfoCommon {
     var receipt: String { get }
 }
 
-extension CKAssetInfoCommon {
+extension CKAssetInfoCommon /*: CKDictionaryRepresentable */ {
     func toCKDictionary() -> [String: AnyObject] {
         return ["receipt": self.receipt,
                 "size": self.size,
@@ -27,7 +27,7 @@ protocol CKAssetInfoPrivate {
     var referenceChecksum: String { get }
 }
 
-extension CKAssetInfoPrivate {
+extension CKAssetInfoPrivate /*: CKDictionaryRepresentable */ {
     func toCKDictionary() -> [String: AnyObject] {
         return ["wrappingKey": self.wrappingKey,
                 "referenceChecksum": self.referenceChecksum]
@@ -40,7 +40,7 @@ protocol CKAssetDownloadInfo {
 
 class CKWAsset: CKAsset {
 
-    struct Info: CKAssetInfoCommon, CKAssetInfoPrivate, CKAssetDownloadInfo {
+    struct Info: CKAssetInfoCommon, CKAssetInfoPrivate, CKAssetDownloadInfo, CKDictionaryRepresentable {
         let fileChecksum: String
         let size: NSNumber
         let receipt: String
