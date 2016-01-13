@@ -93,6 +93,7 @@ class CKWDatabase: NSObject {
             }
 
             if let receivedContinuationMarkerString = jsonObject?["continuationMarker"] as? String {
+                print("continuation")
                 self.performQuery(query, inZoneWithID: zoneID, continuation: (marker: receivedContinuationMarkerString, records: dstRecords), completionHandler: completionHandler)
             } else {
                 dispatch_async(dispatch_get_main_queue()) {
