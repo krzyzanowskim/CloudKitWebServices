@@ -36,11 +36,11 @@ extension CKWRecord: CKDictionaryRepresentable {
 
     //TODO: check this in the wild
     private func loadCKRecordSystemFieldsDictionary(recordObject: [String: AnyObject]) {
-        if let modificationDateValue = recordObject[CloudKit.SystemKeys.modificationDate.rawValue] as? Double {
+        if let modificationDateValue = recordObject["modified"]?["timestamp"] as? NSTimeInterval {
             self[CloudKit.SystemKeys.modificationDate.rawValue] = NSDate(timeIntervalSince1970: modificationDateValue / 1000)
         }
 
-        if let creationDateValue = recordObject[CloudKit.SystemKeys.creationDate.rawValue] as? Double {
+        if let creationDateValue = recordObject["created"]?["timestamp"] as? NSTimeInterval {
             self[CloudKit.SystemKeys.creationDate.rawValue] = NSDate(timeIntervalSince1970: creationDateValue / 1000)
         }
     }
