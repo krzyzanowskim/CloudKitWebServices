@@ -38,6 +38,16 @@ struct CKWQuery: CKDictionaryRepresentable {
         let fieldName: String
         let fieldValue: CKRecordValue
 
+        init(comparator: Comparator, fieldName: String, fieldValue: CKRecordValue) {
+            self.comparator = comparator
+            self.fieldName = fieldName
+            self.fieldValue = fieldValue
+        }
+
+        init(comparator: Comparator, fieldName: CloudKit.SystemKeys, fieldValue: CKRecordValue) {
+            self.init(comparator: comparator, fieldName: fieldName.rawValue, fieldValue: fieldValue)
+        }
+
         func toCKDictionary() -> [String : AnyObject] {
             return ["comparator": comparator.rawValue, "fieldName": fieldName, "fieldValue": fieldValue.toCKDictionary()]
         }
