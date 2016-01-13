@@ -26,7 +26,7 @@ extension CKRecordValue /*: CKDictionaryRepresentable */ {
         } else if let value = self as? NSData {
             field = ["type": "BYTES", "value": value.base64EncodedStringWithOptions([])]
         } else if let value = self as? NSDate {
-            field = ["type": "TIMESTAMP", "value": value.timeIntervalSince1970 * 1000]
+            field = ["type": "TIMESTAMP", "value": Int(value.timeIntervalSince1970 * 1000) as NSNumber]
         } else if let value = self as? String {
             field = ["type": "STRING", "value": value]
         } else if let value = self as? CKWAsset, valueInfo = value.info as? CKWAsset.Info {
