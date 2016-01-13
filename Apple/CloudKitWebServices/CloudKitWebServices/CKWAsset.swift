@@ -8,13 +8,13 @@
 
 import CloudKit
 
-protocol CKAssetInfoCommon {
+protocol CKAssetInfoCommon: CKDictionaryRepresentable {
     var fileChecksum: String { get }
     var size: NSNumber { get }
     var receipt: String { get }
 }
 
-extension CKAssetInfoCommon /*: CKDictionaryRepresentable */ {
+extension CKAssetInfoCommon {
     func toCKDictionary() -> [String: AnyObject] {
         return ["receipt": self.receipt,
                 "size": self.size,
@@ -22,12 +22,12 @@ extension CKAssetInfoCommon /*: CKDictionaryRepresentable */ {
     }
 }
 
-protocol CKAssetInfoPrivate {
+protocol CKAssetInfoPrivate: CKDictionaryRepresentable {
     var wrappingKey: String { get }
     var referenceChecksum: String { get }
 }
 
-extension CKAssetInfoPrivate /*: CKDictionaryRepresentable */ {
+extension CKAssetInfoPrivate {
     func toCKDictionary() -> [String: AnyObject] {
         return ["wrappingKey": self.wrappingKey,
                 "referenceChecksum": self.referenceChecksum]

@@ -9,7 +9,6 @@
 import Foundation
 import CloudKit
 
-typealias CKWRecord = CKRecord
 
 class CloudKit {
 
