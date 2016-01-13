@@ -103,6 +103,18 @@ extension CKWRecord: CKDictionaryRepresentable {
                     {
                         return CKAsset(fileURL: resolvedTemporaryURL)
                     }
+                case "ASSETID_LIST":
+                    var assets: [CKAsset] = []
+                    for valueDict in value as? [[String: AnyObject]] ?? [] {
+                        if let encodedURLString = (valueDict["downloadURL"] as? String)?.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()),
+                           let downloadURL = NSURL(string: encodedURLString),
+                           let resolvedTemporaryURL = resolveAssetTemporaryURL(downloadURL)
+                        {
+                            assets.append(CKAsset(fileURL: resolvedTemporaryURL))
+                        }
+                    }
+                    
+                    return assets
                 case "STRING":
                     return value as? String
                 default:
