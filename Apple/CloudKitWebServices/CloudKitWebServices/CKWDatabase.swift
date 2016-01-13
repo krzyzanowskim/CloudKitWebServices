@@ -87,12 +87,8 @@ class CKWDatabase: NSObject {
                 return
             }
 
-            for recordObject in recordObjects {
-                let recordName = recordObject["recordName"] as! String
-                let recordType = recordObject["recordType"] as! String
-
-                let dstRecord = CKWRecord(recordType: recordType, recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
-                dstRecord.loadCKRecordValuesFromWebRecord(recordObject as? [String: AnyObject] ?? [:])
+            for recordObject in recordObjects as? [[String: AnyObject]] ?? [] {
+                let dstRecord = CKWRecord(dictionary: recordObject, zoneID: zoneID)
                 dstRecords.append(dstRecord)
             }
 
