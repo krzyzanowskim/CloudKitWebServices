@@ -17,11 +17,11 @@ class CloudKit {
     static let maximumRecordSize = 1024
     static let maximumAssetFileSize = 1024 * 15
 
-    enum ServerErrorCode: String, ErrorType {
+    enum ServerErrorCode: ErrorType {
         case ACCESS_DENIED // 0
         case ATOMIC_ERROR
         case AUTHENTICATION_FAILED // 2
-        case AUTHENTICATION_REQUIRED
+        case AUTHENTICATION_REQUIRED(NSURL)
         case BAD_REQUEST
         case CONFLICT
         case EXISTS
@@ -29,7 +29,7 @@ class CloudKit {
         case NOT_FOUND
         case QUOTA_EXCEEDED
         case THROTTLED
-        case TRY_AGAIN_LATER
+        case TRY_AGAIN_LATER(Double)
         case VALIDATING_REFERENCE_ERROR
         case UNIQUE_FIELD_ERROR
         case ZONE_NOT_FOUND
@@ -40,6 +40,57 @@ class CloudKit {
         case UNEXPECTED_SERVER_RESPONSE
         case CONFIGURATION_ERROR
         case BAD_DATABASE
+
+        init(rawValue: String, value: AnyObject? = nil) {
+            switch (rawValue) {
+            case "ACCESS_DENIED":
+                self = .ACCESS_DENIED
+            case "ATOMIC_ERROR":
+                self = .ATOMIC_ERROR
+            case "AUTHENTICATION_FAILED":
+                self = .AUTHENTICATION_FAILED
+            case "AUTHENTICATION_REQUIRED":
+                self = .AUTHENTICATION_REQUIRED(value as! NSURL)
+            case "BAD_REQUEST":
+                self = .BAD_REQUEST
+            case "CONFLICT":
+                self = .CONFLICT
+            case "EXISTS":
+                self = .EXISTS
+            case "INTERNAL_ERROR":
+                self = .INTERNAL_ERROR
+            case "NOT_FOUND":
+                self = .NOT_FOUND
+            case "QUOTA_EXCEEDED":
+                self = .QUOTA_EXCEEDED
+            case "THROTTLED":
+                self = .THROTTLED
+            case "TRY_AGAIN_LATER":
+                self = .TRY_AGAIN_LATER(value as! Double)
+            case "VALIDATING_REFERENCE_ERROR":
+                self = .VALIDATING_REFERENCE_ERROR
+            case "UNIQUE_FIELD_ERROR":
+                self = .UNIQUE_FIELD_ERROR
+            case "ZONE_NOT_FOUND":
+                self = .ZONE_NOT_FOUND
+            case "UNKNOWN_ERROR":
+                self = .UNKNOWN_ERROR
+            case "NETWORK_ERROR":
+                self = .NETWORK_ERROR
+            case "SERVICE_UNAVAILABLE":
+                self = .SERVICE_UNAVAILABLE
+            case "INVALID_ARGUMENTS":
+                self = .INVALID_ARGUMENTS
+            case "UNEXPECTED_SERVER_RESPONSE":
+                self = .UNEXPECTED_SERVER_RESPONSE
+            case "CONFIGURATION_ERROR":
+                self = .CONFIGURATION_ERROR
+            case "BAD_DATABASE":
+                self = .BAD_DATABASE
+            default:
+                self = .UNKNOWN_ERROR
+            }
+        }
     }
 
     enum Environment: String {
