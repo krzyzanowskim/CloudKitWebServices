@@ -58,8 +58,12 @@ class CKWAsset: CKAsset {
 
     var info: CKAssetInfoCommon?
 
-    init(_ asset: CKAsset) {
-        super.init(fileURL: asset.fileURL)
+    required override init(fileURL: NSURL) {
+        super.init(fileURL: fileURL)
+    }
+
+    convenience init(_ asset: CKAsset) {
+        self.init(fileURL: asset.fileURL)
     }
 }
 

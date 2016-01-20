@@ -53,14 +53,14 @@ extension CKWRecord: CKDictionaryRepresentable {
 
         func valueFromCKFieldValueDictionary(dictionary: [String: AnyObject]) -> CKRecordValue? {
 
-            func resolveAssetTemporaryURL(downloadURL: NSURL) -> NSURL? {
+            func downloadAsset(downloadURL: NSURL) -> NSURL? {
                 // TODO: map downloadURL to CKWAsset with synchonous request - this could be lazy resolve, but I don't have functionality to make it now
                 // something like CKLazyAsset where temporaryURL is resolved on download, not earlier
                 var resolvedTemporaryURL: NSURL? = nil
 
                 let downloadSemaphore = dispatch_semaphore_create(0)
-                let downloadSession = NSURLSession.sharedSession().downloadTaskWithURL(downloadURL, completionHandler: { (temporaryURL, response, error) -> Void in
-                    resolvedTemporaryURL = temporaryURL
+                let downloadSession = NSURLSession.sharedSession().downloadTaskWithURL(downloadURL, completionHandler: { (temporaryFileURL, response, error) -> Void in
+                    resolvedTemporaryURL = temporaryFileURL
                     dispatch_semaphore_signal(downloadSemaphore)
                 })
                 downloadSession.resume()
@@ -99,18 +99,18 @@ extension CKWRecord: CKDictionaryRepresentable {
                     if let valueDict = value as? [String: AnyObject],
                        let encodedURLString = (valueDict["downloadURL"] as? String)?.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()),
                        let downloadURL = NSURL(string: encodedURLString),
-                       let resolvedTemporaryURL = resolveAssetTemporaryURL(downloadURL)
+                       let resolvedTemporaryURL = downloadAsset(downloadURL)
                     {
-                        return CKAsset(fileURL: resolvedTemporaryURL)
+                        return CKWAsset(fileURL: resolvedTemporaryURL)
                     }
                 case "ASSETID_LIST":
                     var assets: [CKAsset] = []
                     for valueDict in value as? [[String: AnyObject]] ?? [] {
                         if let encodedURLString = (valueDict["downloadURL"] as? String)?.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()),
                            let downloadURL = NSURL(string: encodedURLString),
-                           let resolvedTemporaryURL = resolveAssetTemporaryURL(downloadURL)
+                           let resolvedTemporaryURL = downloadAsset(downloadURL)
                         {
-                            assets.append(CKAsset(fileURL: resolvedTemporaryURL))
+                            assets.append(CKWAsset(fileURL: resolvedTemporaryURL))
                         }
                     }
                     
